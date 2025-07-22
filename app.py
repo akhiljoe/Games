@@ -1,13 +1,17 @@
 import eventlet
 eventlet.monkey_patch()
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 from flask_socketio import SocketIO, emit
 import json
 import random
 import logging
 import netifaces
+import qrcode
+import io
+import random
 
+room_code = None
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
@@ -20,6 +24,10 @@ admin_name = None
 current_turn = 0
 answers = {}
 scores = {}
+
+
+def generate_room_code():
+    return str(random.randint(1000, 9999))
 
 # Questions setup
 with open('questions.json') as f:
